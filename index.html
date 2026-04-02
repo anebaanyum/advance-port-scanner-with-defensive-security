@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cyber Dashboard</title>
+
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #00ffcc;
+            font-family: monospace;
+            text-align: center;
+        }
+
+        h1 {
+            color: #00ffcc;
+        }
+
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 80%;
+        }
+
+        th, td {
+            border: 1px solid #00ffcc;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #161b22;
+        }
+
+        tr:nth-child(even) {
+            background-color: #161b22;
+        }
+
+        .open {
+            color: lime;
+        }
+
+        .closed {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🛡️ Security Logs Dashboard</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>IP</th>
+            <th>Port</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="logsTable"></tbody>
+</table>
+
+<script>
+function loadLogs() {
+    fetch("http://127.0.0.1:3000/logs")
+    .then(res => res.json())
+    .then(data => {
+        let table = document.getElementById("logsTable");
+        table.innerHTML = "";
+
+        data.forEach(log => {
+            let statusClass = log.status === "OPEN" ? "open" : "closed";
+
+            let row = `
+            <tr>
+                <td>${log.time || "N/A"}</td>
+                <td>${log.ip}</td>
+                <td>${log.port}</td>
+                <td class="${statusClass}">${log.status}</td>
+            </tr>
+            `;
+
+            table.innerHTML += row;
+        });
+    });
+}
+
+setInterval(loadLogs, 2000);
+</script>
+
+</body>
+</html>
